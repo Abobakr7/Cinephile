@@ -2,6 +2,10 @@ package com.example.cinephile.auth.security;
 
 import com.example.cinephile.auth.service.CustomUserDetailsService;
 import com.example.cinephile.auth.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,8 +57,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
+        } catch (ExpiredJwtException |
+                MalformedJwtException e) {
+            log.warn("JWT token is expired or malformed: {}", e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is expired or malformed");
+            return;
+        } catch (SignatureException e) {
+            log.warn("Invalid JWT signature: {}", e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token signature");
+            return;
+        } catch (JwtException e) {
+            log.warn("JWT error: {}", e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT error: " + e.getMessage());
+            return;
         } catch (Exception e) {
-            log.error("Could not set user authentication in security context", e);
+            log.error("Could not set user authentication in security context: {}", e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+            return;
         }
         filterChain.doFilter(request, response);
     }
