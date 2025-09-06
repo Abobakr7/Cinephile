@@ -1,6 +1,7 @@
 package com.example.cinephile.config;
 
 import com.example.cinephile.auth.security.JwtAuthFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.Arrays;
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -41,6 +42,26 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(401);
+                            response.setContentType("application/json");
+                            Map<String, String> err = Map.of(
+                                    "error", "Unauthorized",
+                                    "message", authException.getMessage()
+                            );
+                            new ObjectMapper().writeValue(response.getOutputStream(), err);
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(403);
+                            response.setContentType("application/json");
+                            Map<String, String> err = Map.of(
+                                    "error", "Forbidden",
+                                    "message", accessDeniedException.getMessage()
+                            );
+                            new ObjectMapper().writeValue(response.getOutputStream(), err);
+                        })
+                )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
