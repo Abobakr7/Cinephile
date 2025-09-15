@@ -24,15 +24,8 @@ import java.util.UUID;
 public class MovieService {
     private final MovieRepository movieRepository;
 
-    public Page<MovieCard> getAllMovies(String search, Pageable pageable) {
-        Page<Movie> page = (search == null || search.isBlank())
-                ? movieRepository.findAll(pageable)
-                : movieRepository.findByTitleContainingIgnoreCase(search, pageable);
-
-        return page.map(movie -> new MovieCard(
-                movie.getId(), movie.getTitle(), movie.getPosterUrl(),
-                movie.getYear(), movie.getRated(), movie.getRating()
-        ));
+    public Page<MovieCard> getAllMovies(String title, String genre, String rated, Double rating, Pageable pageable) {
+        return movieRepository.findAllMovies(title, genre, rated, rating, pageable);
     }
 
     public MoviePage getMovieById(UUID id) {

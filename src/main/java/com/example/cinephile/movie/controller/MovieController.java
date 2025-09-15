@@ -25,13 +25,16 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<Page<MovieCard>> getAllMovies(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) String rated,
+            @RequestParam(required = false, defaultValue = "0.0") Double rating,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         page = Math.max(page, 0);
         size = size < 0 ? 20 : Math.min(size, 20);
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(movieService.getAllMovies(search, pageable));
+        return ResponseEntity.ok(movieService.getAllMovies(title, genre, rated, rating, pageable));
     }
 
     @GetMapping("/{id}")
