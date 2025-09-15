@@ -2,6 +2,7 @@ package com.example.cinephile.user.controller;
 
 import com.example.cinephile.user.dto.UpdateProfileRequest;
 import com.example.cinephile.user.dto.UserProfile;
+import com.example.cinephile.user.entity.Role;
 import com.example.cinephile.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,12 +30,17 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserProfile>> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "20") int size) {
+    public ResponseEntity<Page<UserProfile>> getAllUsers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Boolean enabled,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
         page = Math.max(page, 0);
         size = size < 0 ? 20 : Math.min(size, 20);
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(userService.getAllUsers(pageable));
+        return ResponseEntity.ok(userService.getAllUsers(name, email, Role.valueOf(role), enabled, pageable));
     }
 
     @GetMapping("/{id}")

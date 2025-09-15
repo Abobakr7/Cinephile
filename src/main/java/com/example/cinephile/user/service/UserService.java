@@ -5,6 +5,7 @@ import com.example.cinephile.auth.validation.PasswordValidator;
 import com.example.cinephile.common.exception.CinephileException;
 import com.example.cinephile.user.dto.UpdateProfileRequest;
 import com.example.cinephile.user.dto.UserProfile;
+import com.example.cinephile.user.entity.Role;
 import com.example.cinephile.user.entity.User;
 import com.example.cinephile.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -75,8 +76,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserProfile> getAllUsers(Pageable pageable) {
-        Page<User> page = userRepository.findAll(pageable);
+    public Page<UserProfile> getAllUsers(String name, String email, Role role, Boolean enabled, Pageable pageable) {
+        Page<User> page = userRepository.findAllUsers(name, email, role, enabled, pageable);
         return page.map(user -> new UserProfile(
                 user.getId(),
                 user.getEmail(),
