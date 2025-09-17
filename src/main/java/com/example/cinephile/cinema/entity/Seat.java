@@ -25,11 +25,11 @@ public class Seat {
     @Column(name = "seat_number")
     private String seatNumber;
 
-    @Column(name = "row_name")
-    private Character rowName;
+    @Column(name = "row_num")
+    private Character rowNumber;
 
-    @Column(name = "seat_position")
-    private int seatPosition;
+    @Column(name = "col_num")
+    private int colNumber;
 
     @Enumerated(EnumType.STRING)
     private SeatType type;

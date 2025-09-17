@@ -51,8 +51,7 @@ public class ScreenService {
         return new ScreenDetail(
                 screen.getId(), screen.getName(), screen.getCapacity(),
                 seats.stream().map(seat -> new SeatDTO(
-                        seat.getId(), seat.getSeatNumber(), seat.getRowName(),
-                        seat.getSeatPosition(), seat.getType()
+                        seat.getId(), seat.getSeatNumber(), seat.getRowNumber(), seat.getColNumber(), seat.getType()
                 )).toList()
         );
     }
@@ -82,8 +81,8 @@ public class ScreenService {
         for (int row = 65; row < 65 + numRows; row++) { // ASCII A=65
             for (int col = 1; col <= numCols; col++) {
                 Seat seat = new Seat();
-                seat.setRowName((char) row);
-                seat.setSeatPosition(col);
+                seat.setRowNumber((char) row);
+                seat.setColNumber(col);
                 seat.setSeatNumber((char) row + String.valueOf(col));
                 seat.setType(SeatType.STANDARD); // default type
                 seat.setScreen(screen);

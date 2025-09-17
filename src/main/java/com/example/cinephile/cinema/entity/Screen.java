@@ -23,7 +23,7 @@ public class Screen {
     @JoinColumn(name = "cinema_id")
     private Cinema cinema;
 
-    @Column(name = "total_seats")
+    @Column(name = "capacity")
     private int capacity;
 
     @Column(name = "is_active")
