@@ -30,7 +30,7 @@ CREATE TABLE `screens` (
     `id` VARCHAR(255) PRIMARY KEY,
     `name` VARCHAR(150) NOT NULL,
     `cinema_id` VARCHAR(255) NOT NULL,
-    `total_seats` INT NOT NULL DEFAULT 0,
+    `capacity` INT NOT NULL DEFAULT 0,
     `is_active` BOOLEAN DEFAULT TRUE,
     `created_at` DATETIME,
     `updated_at` DATETIME,
@@ -81,8 +81,8 @@ CREATE TABLE `seats` (
     `id` VARCHAR(255) PRIMARY KEY,
     `screen_id` VARCHAR(255) NOT NULL,
     `seat_number` VARCHAR(10) NOT NULL, -- e.g., "A1", "B12"
-    `row_name` VARCHAR(5) NOT NULL, -- e.g., "A", "B"
-    `seat_position` INT NOT NULL, -- position in row
+    `row_num` VARCHAR(5) NOT NULL, -- e.g., "A", "B"
+    `col_num` INT NOT NULL, -- e.g., 1, 2, 3
     `type` ENUM('STANDARD', 'BALCONY', 'PREMIUM', 'WHEELCHAIR') DEFAULT 'STANDARD',
     `is_active` BOOLEAN DEFAULT TRUE,
     `created_at` DATETIME,
@@ -92,7 +92,6 @@ CREATE TABLE `seats` (
     UNIQUE KEY `unique_seat_per_screen` (`screen_id`, `seat_number`)
 );
 
--- Simplified booking model - single source of truth
 CREATE TABLE `bookings` (
     `id` VARCHAR(255) PRIMARY KEY,
     `user_id` VARCHAR(255) NOT NULL,
@@ -109,15 +108,15 @@ CREATE TABLE `bookings` (
     CONSTRAINT `booking_showtime_FK` FOREIGN KEY (`showtime_id`) REFERENCES `showtimes`(`id`)
 );
 
-CREATE TABLE `booked_seats` (
+CREATE TABLE `booking_seats` (
     `id` VARCHAR(255) PRIMARY KEY,
     `seat_id` VARCHAR(255) NOT NULL,
     `showtime_id` VARCHAR(255) NOT NULL,
-    `user_id` VARCHAR(255) NULL, -- NULL means available
-    `booking_id` VARCHAR(255) NULL, -- NULL during hold, populated when confirmed
+    `user_id` VARCHAR(255) NULL,
+    `booking_id` VARCHAR(255) NULL,
     `status` ENUM('AVAILABLE', 'HELD', 'BOOKED') DEFAULT 'AVAILABLE',
     `price` DECIMAL(5, 2) NOT NULL,
-    `held_until` DATETIME NULL, -- for 15-minute window
+    `held_until` DATETIME NULL,
     `created_at` DATETIME,
     `updated_at` DATETIME,
 
@@ -125,7 +124,7 @@ CREATE TABLE `booked_seats` (
     CONSTRAINT `bs_showtime_FK` FOREIGN KEY (`showtime_id`) REFERENCES `showtimes`(`id`),
     CONSTRAINT `bs_user_FK` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     CONSTRAINT `bs_booking_FK` FOREIGN KEY (`booking_id`) REFERENCES `bookings`(`id`),
-    UNIQUE KEY `unique_seat_showtime` (`seat_id`, `showtime_id`)
+    UNIQUE KEY `unique_seat_showtime` (`id`, `showtime_id`)
 );
 
 CREATE TABLE `movie_lists` (
