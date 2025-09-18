@@ -43,6 +43,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/cinemas/*").hasRole("MANAGER")
                         .requestMatchers("/api/cinemas/*/screens").hasRole("MANAGER")
                         .requestMatchers("/api/cinemas/screens/*").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/showtimes",
+                                "/api/showtimes/*","/api/showtimes/now").permitAll()
+                        .requestMatchers("/api/showtimes/movie/**").hasRole("USER")
+                        .requestMatchers("/api/showtimes/managed/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/api/showtimes").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/showtimes/*").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/showtimes/*").hasRole("MANAGER")
+                        .requestMatchers("/api/bookings/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
