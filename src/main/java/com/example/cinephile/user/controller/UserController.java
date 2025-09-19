@@ -40,7 +40,8 @@ public class UserController {
         page = Math.max(page, 0);
         size = size < 0 ? 20 : Math.min(size, 20);
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(userService.getAllUsers(name, email, Role.valueOf(role), enabled, pageable));
+        Role roleEnum = role != null ? Role.valueOf(role) : null;
+        return ResponseEntity.ok(userService.getAllUsers(name, email, roleEnum, enabled, pageable));
     }
 
     @GetMapping("/{id}")
