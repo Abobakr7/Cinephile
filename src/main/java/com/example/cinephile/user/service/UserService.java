@@ -51,15 +51,16 @@ public class UserService {
         if (request.oldPassword() != null && request.newPassword() != null) {
             // check if old password matches
             if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
-                throw new IllegalArgumentException("Old password is incorrect");
+                throw new CinephileException("Old password is incorrect", HttpStatus.BAD_REQUEST);
             }
 
             // validate new password
             PasswordValidator passwordValidator = new PasswordValidator();
             if (!passwordValidator.isValid(request.newPassword(), null)) {
-                throw new IllegalArgumentException(
-                    "Password must be 6-30 characters long, contain at least one uppercase letter, " +
-                    "one lowercase letter, one digit, and no special characters");
+                throw new CinephileException(
+                        "Password must be 6-30 characters long, contain at least one uppercase letter, " +
+                        "one lowercase letter, one digit, and no special characters",
+                        HttpStatus.BAD_REQUEST);
             }
 
             // encode and set new password
