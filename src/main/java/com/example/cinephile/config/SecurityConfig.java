@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/showtimes/*").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.DELETE, "/api/showtimes/*").hasRole("MANAGER")
                         .requestMatchers("/api/bookings/**").hasRole("USER")
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**",
+                                "/api-docs/**", "/api-docs.yaml").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
