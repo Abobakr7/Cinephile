@@ -7,6 +7,10 @@ import java.util.UUID;
 
 public record BookingConfirmResponse(UUID bookingId,
                                      UUID showtimeId,
+                                     String movieTitle,
+                                     String cinemaName,
+                                     String screenName,
+                                     LocalDateTime startTime,
                                      Integer numberOfSeats,
                                      BigDecimal totalPrice,
                                      LocalDateTime confirmedAt,
