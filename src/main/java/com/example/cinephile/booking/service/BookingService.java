@@ -1,5 +1,6 @@
 package com.example.cinephile.booking.service;
 
+import com.example.cinephile.auth.service.EmailService;
 import com.example.cinephile.cinema.entity.Seat;
 import com.example.cinephile.booking.dto.*;
 import com.example.cinephile.booking.entity.*;
@@ -33,6 +34,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final BookingSeatRepository bookingSeatRepository;
     private final ShowtimeRepository showtimeRepository;
+    private final EmailService emailService;
 
     public BookingInfoResponse createBooking(UUID showtimeId, User user) {
         log.info("Creating new booking for user {} in showtime {}", user.getId(), showtimeId);
@@ -179,14 +181,20 @@ public class BookingService {
                     );
                 }).toList();
 
-        return new BookingConfirmResponse(
+        BookingConfirmResponse response = new BookingConfirmResponse(
                 booking.getId(),
                 booking.getShowtime().getId(),
+                booking.getShowtime().getMovie().getTitle(),
+                booking.getShowtime().getCinema().getName(),
+                booking.getShowtime().getScreen().getName(),
+                booking.getShowtime().getStartTime(),
                 booking.getNumberOfSeats(),
                 booking.getTotalPrice(),
                 booking.getConfirmedAt(),
                 bookedSeatDTOs
         );
+        emailService.sendBookingConfirmationEmail(booking.getUser().getEmail(), response);
+        return response;
     }
 
     public void cancelBooking(UUID bookingId) {
