@@ -1,9 +1,9 @@
 # Cinephile
 
-Cinephile is a movie ticket reservation system that enables users to book cinema ticktets online and a movie catalog. This project is under active development.
+Cinephile is a movie ticket reservation system that enables users to book cinema tickts online and a movie catalog. This project is under active development.
 
 ## Project Status
-- 🚧 **Work in Progress:** Some features are not yet implemented (i.e. Booking QR code sent to mail).
+- **Initial Version Finished**
 - Contributions and feedback are welcome!
 
 ## Features
@@ -14,6 +14,7 @@ Cinephile is a movie ticket reservation system that enables users to book cinema
 - Showtimes management (add/edit/delete)
 - Cinemas management (add/edit/delete)
 - Booking cinema tickets for movies showtimes
+- send booking confirmation email with QR code
 - Booking management (view/cancel)
 - Integration tests
 - Swagger API documentation
@@ -61,8 +62,9 @@ src/
 - Initial migration script: `src/main/resources/db/migration/V1__init.sql`
 - Uses Flyway for database migrations.
 
-## License
-This project is currently not licensed. Licensing will be added upon completion.
+## API Documentation
+- Swagger UI available at: `http://localhost:8080/swagger-ui.html`
+- OpenAPI specification available at: `http://localhost:8080/api-docs`
 
 ---
 
