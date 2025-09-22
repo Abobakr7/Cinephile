@@ -53,6 +53,30 @@ src/
    ```bash
    ./mvnw test
    ```
+   
+## Booking Flow
+1. User must be logged in.
+2. Browse available showtimes: ``GET /api/showtimes/now?title=&genre=&rated=&page=&size&``
+3. Select a showtime: ``GET /api/showtimes/{showtimeId}``
+4. Choose cinema from cinemas hosting the showtime: ``GET /api/showtimes/movie/{movieId}/cinemas``
+5. Choose date from available dates: ``GET /api/showtimes/movie/{movieId}/cinema/{cinemaId}/dates``
+6. Choose time from available times: ``GET /api/showtimes/movie/{movieId}/cinema/{cinemaId}/date/{date}/times``
+7. Choose screen from available screens: ``GET /api/showtimes/movie/{movieId}/cinema/{cinemaId}/dates/{date}/times/{time}/screens``
+8. Layout of the screen with available seats: ``GET /api/showtimes/movie/{movieId}/cinema/{cinemaId}/dates/{date}/times/{time}/screens/{screenId}/layout``
+9. Create booking **(start point)**: ``POST /api/bookings/{showtimesId}``
+10. Now you can choose your seats:
+    - Choose one seat at a time: ``POST /api/bookings/{bookingId}/lock-seat``
+    - To deselect a seat: ``POST /api/bookings/{bookingId}/release-seat``
+      ```
+      Request Body for both endpoints:
+      {
+         "seatId": UUID,
+         "showtimeId": UUID
+      }
+      ```
+11. When you finish choosing your seats, confirm your booking: ``POST /api/bookings/{bookingId}/confirm``
+12. You will receive a booking confirmation email with QR code.
+13. To cancel your booking: ``POST /api/bookings/{bookingId}/cancel``
 
 ## Configuration
 - Main configuration: `src/main/resources/application.properties`
